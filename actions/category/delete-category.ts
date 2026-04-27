@@ -1,6 +1,7 @@
 'use server';
 
 import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function DeleteCategory(id: string) {
     try {
@@ -10,10 +11,13 @@ export async function DeleteCategory(id: string) {
             },
         });
 
+        revalidatePath('/categorias');
+
         return {
             ok: true,
             message: "Categoría eliminada exitosamente",
         }
+
     } catch (error) {
         console.error("Error al eliminar categoría:", error);
         return {
