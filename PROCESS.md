@@ -34,3 +34,23 @@ Actualizaré este archivo con comentarios y cambios conforme avance el proyecto.
 
 Definitivamente también tomaré un poco de café y escucharé música de Manuel Medrano (requerido totalmente).
 
+En mongo levanté un servidor con docker exec -it prisma-mongo mongosh y rs.initiate() pero me dio un error: Error: MongoDB error
+Kind: Server selection timeout: No available servers. Topology: { Type: ReplicaSetNoPrimary, Set Name: rs0" }, labels: {}, source: None
+   0: schema_commands::commands::schema_push::Calculate from database
+             at schema-engine/commands/src/commands/schema_push.rs:40
+   1: schema_core::state::SchemaPush
+             at schema-engine/core/src/state.rs:545 al parecer esto por las replicas, al parecer no tenía un PRIMARY, usé rs.initiate({
+
+  _id: "rs0",
+
+  members: [
+
+    { _id: 0, host: "localhost:27017" }
+
+  ]
+
+}) tive que bajar el contenedor y volver a crearlo para ahora sí configurar correctamente con cfg = rs.conf()
+
+cfg.members[0].host = "localhost:27017"
+
+rs.reconfig(cfg, { force: true }) dentro de la configuración de mongoose.
