@@ -1,36 +1,16 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Este proyecto usa las siguientes tecnologías:
+Next.js 16
+Prisma
+Mongodb
+Docker
 
-## Getting Started
+Pasos para levantar el proyecto:
+1. Hacer un fork
+2. Descargar el repositorio 
+3. Levantar el contenedor de docker con docker-compose up -d (Para detached)
+5. Establecer la variable de entorno DATABASE_URL (puedes tomar el archivo .env.template y renombrarlo a .env)
+4. Hacer la migración de prisma
+Levantar la aplicación con yarn dev (o tu gestor de módulos de node preferido)
+5. Ingresar con el usuario de prueba que se crea al correr /api/testing con contraseñas: admin, admin123
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+EVITA EN CUALQUIER MOMENTO SUBIR TU ARCHIVO .ENV USANDO UNA BASE DE DATOS EN PRODUCCIÓN

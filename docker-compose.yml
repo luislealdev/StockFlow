@@ -1,0 +1,48 @@
+# ==========================================================
+# Docker Compose - MongoDB 8 para desarrollo con Prisma 6
+# Proyecto local listo para usar
+#
+# Incluye:
+# - MongoDB 8
+# - Replica Set habilitado (requerido/recomendado por Prisma)
+# - Persistencia de datos en volumen local
+# - Puerto expuesto 27017
+#
+# Uso:
+# docker compose up -d
+#
+# Después ejecutar UNA sola vez:
+# docker exec -it prisma-mongo mongosh
+#
+# Dentro de mongosh:
+# rs.initiate()
+#
+# Connection String:
+# mongodb://localhost:27017/mydb?replicaSet=rs0
+# ==========================================================
+
+services:
+  mongo:
+    image: mongo:8
+    container_name: prisma-mongo
+
+    # Reinicia automáticamente salvo que se detenga manualmente
+    restart: unless-stopped
+
+    # Habilita Replica Set y permite conexiones externas/locales
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+
+    # Puerto estándar de MongoDB
+    ports:
+      - "27017:27017"
+
+    # Variables opcionales para inicialización
+    environment:
+      MONGO_INITDB_DATABASE: mydb
+
+    # Persistencia local de datos
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
