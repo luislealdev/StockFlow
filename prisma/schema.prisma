@@ -46,6 +46,7 @@ enum TransactionType {
     IN
     OUT
     TRANSFER
+    ADJUSTMENT
 }
 
 model Transaction {

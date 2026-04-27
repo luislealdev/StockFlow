@@ -62,3 +62,28 @@ rs.reconfig(cfg, { force: true })
 - `sonner@^1.7.4` - Elementos de confirmaciones visuales
 - `@hookform/resolvers@^3.10.0` - Uso de zod con react hook form
 - `lucide-react@^0.454.0` - Íconos de react
+
+## Avances recientes
+
+- Ya tengo levantado el proyecto con Next.js y la base de datos local en MongoDB mediante Docker.
+- Ya pude conectar Prisma con MongoDB y ejecutar `npx prisma db push` sin errores.
+- Ya construí la base del panel con un sidebar responsive y un layout general para el área privada.
+- Ya implementé el CRUD de categorías y el de tiendas siguiendo el mismo patrón de tabla, formulario modal, paginación y búsqueda.
+- Ya avancé en el CRUD de productos, incluyendo el selector de categoría y la captura de stock por tienda.
+- Ya confirmé que el error de hidratación que aparecía en el navegador venía de una extensión y no de mi código.
+
+## Decisiones técnicas que fui tomando
+
+- Decidí mantener una interfaz más tipo SaaS, sobria y clara, en lugar de un estilo demasiado futurista.
+- Decidí reutilizar el mismo patrón visual y funcional para módulos como categorías, tiendas y productos, para no duplicar comportamientos innecesarios.
+- Decidí dejar los formularios como componentes cliente y las consultas/acciones como server actions para conservar un flujo simple.
+- Decidí manejar el stock como una entidad separada por tienda, en vez de intentar meterlo dentro del producto como un campo más.
+- Decidí usar validaciones con Zod y ajustar los schemas a lo que realmente necesito mandar desde el formulario.
+- Decidí que el `page.tsx` de productos cargue categorías y tiendas desde el servidor para poder alimentar los selectores del formulario.
+
+## Lecciones aprendidas
+
+- Cuando un formulario incluye stock por tienda, no conviene reutilizar el mismo schema de persistencia para el formulario si todavía faltan datos que solo existen al guardar.
+- En MongoDB con Prisma, si el modelo depende de relaciones, conviene pensar desde el inicio cómo voy a sincronizar los hijos relacionados, no solo el registro principal.
+- Si el formulario manda filas vacías o datos incompletos, la validación se rompe antes de llegar a Prisma, así que vale más filtrar y normalizar desde el UI.
+- El comportamiento visual del proyecto mejora mucho cuando el panel tiene un layout base consistente y los módulos comparten estructura.
