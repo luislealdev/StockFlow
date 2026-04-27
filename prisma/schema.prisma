@@ -14,30 +14,30 @@ model Category {
 }
 
 model Product {
-    id         String    @id @default(auto()) @map("_id") @db.ObjectId
-    SKU        String?   @unique
+    id         String   @id @default(auto()) @map("_id") @db.ObjectId
+    SKU        String?  @unique
     name       String
     price      Float
-    categoryId String    @db.ObjectId
-    category   Category  @relation(fields: [categoryId], references: [id])
+    categoryId String   @db.ObjectId
+    category   Category @relation(fields: [categoryId], references: [id])
     stocks     Stock[]
 }
 
 model Store {
-    id       String   @id @default(auto()) @map("_id") @db.ObjectId
-    name     String   @unique
+    id       String  @id @default(auto()) @map("_id") @db.ObjectId
+    name     String  @unique
     location String
     stocks   Stock[]
 }
 
 model Stock {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    productId String   @db.ObjectId
-    storeId   String   @db.ObjectId
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    productId String @db.ObjectId
+    storeId   String @db.ObjectId
     quantity  Int
 
-    product   Product  @relation(fields: [productId], references: [id])
-    store     Store    @relation(fields: [storeId], references: [id])
+    product Product @relation(fields: [productId], references: [id])
+    store   Store   @relation(fields: [storeId], references: [id])
 
     @@unique([productId, storeId])
 }
@@ -57,4 +57,10 @@ model Transaction {
     toStoreId   String?         @db.ObjectId
     quantity    Int
     timestamp   DateTime        @default(now())
+}
+
+enum Status {
+    pending
+    processed
+    failed
 }
