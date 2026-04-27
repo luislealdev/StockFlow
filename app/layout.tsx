@@ -10,8 +10,10 @@ export default function RootLayout({
     <html
       lang="es"
     >
-      <body className="min-h-full flex flex-col">{children}</body>
-      <Toaster />
+      <body className="min-h-full flex flex-col">
+        {children}
+        <Toaster richColors position="top-right" />
+      </body>
     </html>
   );
 }
