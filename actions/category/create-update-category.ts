@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import { CategorySchema } from "@/schemas";
 
-export async function createOrUpdateCategory(data: unknown) {
+export async function createUpdateCategory(data: unknown) {
     const parsedData = CategorySchema.safeParse(data);
 
     if (!parsedData.success) {

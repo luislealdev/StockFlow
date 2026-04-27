@@ -21,7 +21,7 @@ export async function getPaginatedCategories({
             }
             : {};
 
-        const [categories, total] = await Promise.all([
+        const [data, total] = await Promise.all([
             prisma.category.findMany({
                 where,
                 skip,
@@ -32,8 +32,9 @@ export async function getPaginatedCategories({
 
         return {
             ok: true,
-            categories,
+            data,
             total,
+            totalPages: Math.ceil(total / take),
         };
     } catch (error) {
         console.error("Error al obtener categorías paginadas:", error);
