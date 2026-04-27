@@ -1,66 +1,64 @@
 # Desarrollo de StockFlow
 
-Este documento recoge el plan inicial y los pasos inmediatos para poner en marcha el proyecto StockFlow. Es un borrador vivo: se actualizará según avance el desarrollo y aparezcan nuevas decisiones.
+Este documento recoge el plan inicial y los pasos inmediatos para poner en marcha el proyecto StockFlow. Es un borrador vivo: se actualizará según avance el desarrollo.
 
-**Objetivo:** Crear una aplicación con Next.js que use Server Actions y una base de datos MongoDB gestionada vía Prisma, con validaciones en el servidor y una UI sencilla en el frontend.
+**Objetivo:** Crear una aplicación con Next.js que utilice Server Actions cuando sea apropiado, con una capa de datos en MongoDB gestionada por Prisma, validación con Zod y una UI sencilla en el frontend.
 
 **Stack y herramientas (propuesta):**
-- **Frontend / framework:** Next.js (Server Actions cuando proceda)
+- **Frontend / framework:** Next.js
 - **Base de datos:** MongoDB (contenedor Docker para desarrollo local)
-- **ORM:** Prisma (con conectividad a MongoDB)
+- **ORM:** Prisma
 - **Validación:** Zod
-- **Autenticación:** NextAuth (implementación sencilla)
-- **Ayudas:** Docker, Yarn, Visual Studio Code, Copilot para UI
+- **Autenticación:** NextAuth
+- **Utilidades:** Docker, Yarn, Visual Studio Code, Copilot (solo para UI)
 
-## Pasos inmediatos
+## Checklist — Pasos inmediatos
 
-1. Crear el repositorio en GitHub y subir el primer commit.
-2. Definir el esquema de Prisma para usar con MongoDB.
-3. Levantar MongoDB en un contenedor Docker para desarrollo local.
-4. Verificar la conexión y aplicar migraciones/necesarios (según flujo con Prisma + Mongo).
-5. Crear esquemas Zod para validar datos antes de procesarlos en las Server Actions.
-6. Implementar Server Actions y, si es necesario, una API REST/HTTP sencilla para complementar la integración.
-7. Crear APIs/handlers básicos por modelo (o actions equivalentes).
-8. Construir formularios y tablas (grids) en el frontend y adaptarlos para llamadas del servidor o la API.
-9. Añadir autenticación básica con NextAuth y proteger rutas/acciones necesarias.
+- [ ] Inicializar proyecto Next.js (ya hecho si usaste `yarn create next-app`).
+- [ ] Crear repositorio en GitHub y subir el primer commit.
+- [ ] Definir el esquema de Prisma para MongoDB.
+- [ ] Levantar MongoDB en Docker (contenedor para desarrollo local).
+- [ ] Configurar replica set si Prisma/feature lo requiere.
+- [ ] Establecer variables de entorno en `.env` (ej. `DATABASE_URL`, `AUTH_SECRET`).
+- [ ] Aplicar esquema de Prisma: `npx prisma db push`.
+- [ ] Crear esquemas Zod para validación en server actions.
+- [ ] Implementar Server Actions / API endpoints básicos por modelo.
+- [ ] Construir formularios y tablas en frontend (adaptables a Server Actions o API).
+- [ ] Añadir autenticación básica con NextAuth y proteger rutas necesarias.
 
-## Notas y decisiones iniciales
+## Notas y decisiones
 
-- Prefiero usar Server Actions cuando permita un flujo más simple y reutilizable; si algún caso lo requiere, proporcionaré la misma funcionalidad vía API para poder elegir desde el frontend.
-- Durante el desarrollo usaré la documentación oficial de Prisma y MongoDB. Consultaré ChatGPT y utilizaré Copilot en VS Code únicamente para diseño de interfaces y snippets de UI; las partes de servidor las revisaré manualmente para evitar mezclar responsabilidades.
-- Mi principal reto actual: refrescar conceptos de Mongoose/MongoDB y configurar correctamente Docker para la base de datos local; evaluaré si usar Mongoose o solo Prisma según conveniencia.
+- Usaré Server Actions cuando simplifiquen el flujo; si hace falta, expondré la misma funcionalidad vía API para permitir elección desde el frontend.
+- Copilot se usará únicamente para la capa de UI; revisaré manualmente todo código de servidor.
+- Evaluaré si es necesario usar Mongoose además de Prisma; la intención es preferir Prisma cuando cubra las necesidades.
 
-Actualizaré este archivo con comentarios y cambios conforme avance el proyecto.
+## Problemas y soluciones (MongoDB / Replica Set)
 
-Definitivamente también tomaré un poco de café y escucharé música de Manuel Medrano (requerido totalmente).
+- Síntoma: al ejecutar `rs.initiate()` en `mongosh` apareció un error de "Server selection timeout" o "ReplicaSetNoPrimary".
+- Causa común: el replica set no quedó con un PRIMARY o la configuración de hosts no coincide con cómo se exponen los puertos desde el contenedor.
+- Pasos de corrección que funcionaron:
 
-En mongo levanté un servidor con docker exec -it prisma-mongo mongosh y rs.initiate() pero me dio un error: Error: MongoDB error
-Kind: Server selection timeout: No available servers. Topology: { Type: ReplicaSetNoPrimary, Set Name: rs0" }, labels: {}, source: None
-   0: schema_commands::commands::schema_push::Calculate from database
-             at schema-engine/commands/src/commands/schema_push.rs:40
-   1: schema_core::state::SchemaPush
-             at schema-engine/core/src/state.rs:545 al parecer esto por las replicas, al parecer no tenía un PRIMARY, usé rs.initiate({
-
+```js
+// En el shell del contenedor
+rs.initiate({
   _id: "rs0",
+  members: [{ _id: 0, host: "localhost:27017" }]
+})
 
-  members: [
-
-    { _id: 0, host: "localhost:27017" }
-
-  ]
-
-}) tuve que bajar el contenedor y volver a crearlo para ahora sí configurar correctamente con cfg = rs.conf()
-
+// Si es necesario reconfigurar:
+cfg = rs.conf()
 cfg.members[0].host = "localhost:27017"
+rs.reconfig(cfg, { force: true })
+```
 
-rs.reconfig(cfg, { force: true }) dentro de la configuración de mongoose.
+- Nota: dependiendo de cómo estés conectando (desde el host o desde otro contenedor), puede que debas usar el nombre del contenedor o la IP en lugar de `localhost`. Revisa `rs.status()` y los logs del contenedor si persisten los problemas.
 
-Voy a probar a conectarme ahora a mi db desde datagrip para ver que se hayan creado correctamente mis tablas aunque en consola me dice que todo bien.
+## Dependencias añadidas 
 
-Agregué las dependencias de     "zod": "3.25.76",
-    "bcryptjs": "^3.0.2",
-    "next-auth": "^5.0.0-beta.4",
-    "recharts": "2.15.4",
-    "sonner": "^1.7.4",
-    "@hookform/resolvers": "^3.10.0",
-    "lucide-react": "^0.454.0" para...
+- `zod@3.25.76` - Manejo de validación de datos
+- `bcryptjs@^3.0.2` - Encriptación de contra
+- `next-auth@^5.0.0-beta.4` - Manejo de autenticación mediante JWT
+- `recharts@2.15.4` - Gráficas visuales
+- `sonner@^1.7.4` - Elementos de confirmaciones visuales
+- `@hookform/resolvers@^3.10.0` - Uso de zod con react hook form
+- `lucide-react@^0.454.0` - Íconos de react
