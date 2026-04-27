@@ -31,3 +31,6 @@ Este documento recoge el plan inicial y los pasos inmediatos para poner en march
 - Mi principal reto actual: refrescar conceptos de Mongoose/MongoDB y configurar correctamente Docker para la base de datos local; evaluaré si usar Mongoose o solo Prisma según conveniencia.
 
 Actualizaré este archivo con comentarios y cambios conforme avance el proyecto.
+
+Definitivamente también tomaré un poco de café y escucharé música de Manuel Medrano (requerido totalmente).
+

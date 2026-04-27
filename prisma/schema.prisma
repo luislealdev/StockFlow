@@ -1,0 +1,50 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+model Category {
+    id   String @id @default(auto()) @map("_id") @db.ObjectId
+    name String
+}
+
+model Product {
+    id         String  @id @default(auto()) @map("_id") @db.ObjectId
+    SKU        String?
+    name       String
+    price      Float
+    categoryId String  @db.ObjectId
+}
+
+model Store {
+    id       String @id @default(auto()) @map("_id") @db.ObjectId
+    name     String
+    location String
+}
+
+model Stock {
+    id        String @id @default(auto()) @map("_id") @db.ObjectId
+    productId String @db.ObjectId
+    storeId   String @db.ObjectId
+    quantity  Int
+}
+
+enum TransactionType {
+    IN
+    OUT
+    TRANSFER
+}
+
+model Transaction {
+    id          String          @id @default(auto()) @map("_id") @db.ObjectId
+    type        TransactionType
+    productId   String          @db.ObjectId
+    fromStoreId String?         @db.ObjectId
+    toStoreId   String?         @db.ObjectId
+    quantity    Int
+    timestamp   DateTime        @default(now())
+}
