@@ -87,7 +87,3 @@ Referencias útiles
 - Documentación de Prisma: https://www.prisma.io/docs
 - Documentación de MongoDB: https://www.mongodb.com/docs
 
-Si quieres, puedo:
-- Convertir estos pasos en un `Makefile` o scripts npm
-- Añadir un ejemplo de `.env.template`
-- Crear issues en GitHub a partir de los pasos pendientes
