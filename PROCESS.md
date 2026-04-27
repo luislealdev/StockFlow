@@ -49,8 +49,18 @@ Kind: Server selection timeout: No available servers. Topology: { Type: ReplicaS
 
   ]
 
-}) tive que bajar el contenedor y volver a crearlo para ahora sí configurar correctamente con cfg = rs.conf()
+}) tuve que bajar el contenedor y volver a crearlo para ahora sí configurar correctamente con cfg = rs.conf()
 
 cfg.members[0].host = "localhost:27017"
 
 rs.reconfig(cfg, { force: true }) dentro de la configuración de mongoose.
+
+Voy a probar a conectarme ahora a mi db desde datagrip para ver que se hayan creado correctamente mis tablas aunque en consola me dice que todo bien.
+
+Agregué las dependencias de     "zod": "3.25.76",
+    "bcryptjs": "^3.0.2",
+    "next-auth": "^5.0.0-beta.4",
+    "recharts": "2.15.4",
+    "sonner": "^1.7.4",
+    "@hookform/resolvers": "^3.10.0",
+    "lucide-react": "^0.454.0" para...

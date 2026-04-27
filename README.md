@@ -1,32 +1,93 @@
-Este proyecto usa las siguientes tecnologías:
-Next.js 16
-Prisma
-Mongodb
-Docker
+# StockFlow — Resumen y arranque rápido
 
-Pasos para levantar el proyecto:
+Tecnologías principales
+- Next.js 16
+- Prisma
+- MongoDB
+- Docker
 
-1. Hacer un fork
-2. Descargar el repositorio
-3. Levantar el contenedor de docker con docker-compose up -d (Para detached)
-   Inicializa replica set docker exec -it prisma-mongo mongosh (verás que la consola sigue corriendo),
-   configura: cfg = rs.conf()
+Requisitos previos
+- Docker y Docker Compose instalados
+- Node.js y Yarn (o npm) instalados
 
+Pasos para levantar el proyecto (desarrollo)
+
+1. Fork y clonación
+
+   - Hacer fork del repositorio y clonar localmente.
+
+2. Levantar MongoDB en Docker
+
+   - Iniciar los contenedores (modo detached):
+
+```bash
+docker-compose up -d
+```
+
+   - Acceder al shell de Mongo dentro del contenedor (ejemplo de contenedor llamado `prisma-mongo`):
+
+```bash
+docker exec -it prisma-mongo mongosh
+```
+
+3. Configurar el Replica Set (si es necesario)
+
+   - En el shell de `mongosh` puede que necesites inicializar o reconfigurar el replica set para que Prisma pueda conectarse correctamente:
+
+```js
+rs.initiate({
+  _id: "rs0",
+  members: [ { _id: 0, host: "localhost:27017" } ]
+})
+
+// Si necesitas reconfigurar:
+cfg = rs.conf()
 cfg.members[0].host = "localhost:27017"
-
 rs.reconfig(cfg, { force: true })
-Estás configurando Mongo internamente, no Prisma ni Next.js.
+```
 
-Es equivalente a:
+   - Nota: estos pasos configuran MongoDB internamente; no cambian la configuración de Prisma ni de Next.js.
 
-- crear una base de datos
-- activar una feature del servidor
-- configurar un cluster de 1 nodo
+4. Variables de entorno
 
-5. Establecer la variable de entorno DATABASE_URL (puedes tomar el archivo .env.template y renombrarlo a .env)
-   Establecer la variable de entorno AUTH_SECRET en el archivo .env mediante el comando:
-6. Hacer la migración de prisma con npx prisma db push
-   Levantar la aplicación con yarn dev (o tu gestor de módulos de node preferido)
-7. Ingresar con el usuario de prueba que se crea al correr /api/testing con contraseñas: admin, admin123
+   - Crea el archivo `.env` a partir de `.env.template` y establece al menos:
 
-EVITA EN CUALQUIER MOMENTO SUBIR TU ARCHIVO .ENV USANDO UNA BASE DE DATOS EN PRODUCCIÓN
+```
+DATABASE_URL="mongodb://localhost:27017/tu_basedatos?directConnection=true&ssl=false"
+AUTH_SECRET="una_clave_secreta_larga"
+```
+
+   - No subas jamás tu `.env` con credenciales de producción al repositorio.
+
+5. Aplicar esquema de Prisma
+
+   - Para sincronizar el esquema con la base de datos:
+
+```bash
+npx prisma db push
+```
+
+6. Levantar la aplicación
+
+```bash
+yarn dev
+# o
+npm run dev
+```
+
+7. Cuenta de prueba
+
+   - Si el proyecto incluye una ruta de testing que crea un usuario, por ejemplo `/api/testing`, revisa su documentación o el código para ver las credenciales generadas (en tu versión actual eran `admin` / `admin123` — úsalo solo en desarrollo).
+
+Advertencias y notas
+- La base de datos local por defecto puede no tener contraseña; en producción debes configurar autenticación y backups.
+- El replica set de MongoDB es necesario para algunas características de Prisma con MongoDB; si tienes problemas de conexión revisa los logs del contenedor y el estado del replica set (`rs.status()`).
+
+Referencias útiles
+- Documentación de Prisma: https://www.prisma.io/docs
+- Documentación de MongoDB: https://www.mongodb.com/docs
+
+Si quieres, puedo:
+- Convertir estos pasos en un `Makefile` o scripts npm
+- Añadir un ejemplo de `.env.template`
+- Crear issues en GitHub a partir de los pasos pendientes
