@@ -1,3 +1,5 @@
+import { Store } from "@prisma/client";
+import { IProductExtended } from "./product.interface";
 
 
 export type DatePreset = 'today' | 'week' | 'month' | 'custom';
@@ -22,4 +24,6 @@ export interface PaginatedComponentProps<T> {
     page: number;
     take: number;
     search: string;
+    products?: IProductExtended[];
+    stores?: Store[];
 }

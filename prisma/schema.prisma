@@ -21,6 +21,7 @@ model Product {
     categoryId String   @db.ObjectId
     category   Category @relation(fields: [categoryId], references: [id])
     stocks     Stock[]
+    transactions Transaction[]
 }
 
 model Store {
@@ -28,6 +29,8 @@ model Store {
     name     String  @unique
     location String
     stocks   Stock[]
+    fromTransactions Transaction[] @relation("fromTransactions")
+    toTransactions   Transaction[] @relation("toTransactions")
 }
 
 model Stock {
@@ -53,8 +56,11 @@ model Transaction {
     id          String          @id @default(auto()) @map("_id") @db.ObjectId
     type        TransactionType
     productId   String          @db.ObjectId
+    product     Product         @relation(fields: [productId], references: [id])
     fromStoreId String?         @db.ObjectId
+    fromStore   Store?          @relation("fromTransactions", fields: [fromStoreId], references: [id])
     toStoreId   String?         @db.ObjectId
+    toStore     Store?          @relation("toTransactions", fields: [toStoreId], references: [id])
     quantity    Int
     timestamp   DateTime        @default(now())
 }

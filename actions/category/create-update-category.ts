@@ -34,10 +34,10 @@ export async function createUpdateCategory(data: unknown) {
             category,
         }
     } catch (error) {
-        console.error("Error al crear/actualizar categoría:", error);
+        console.error("Error al guardar categoría:", error);
         return {
             ok: false,
-            message: "Error al crear/actualizar categoría",
+            message: `Error en guardar categoría`,
         }
     }
 

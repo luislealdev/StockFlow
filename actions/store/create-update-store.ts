@@ -34,10 +34,10 @@ export async function createUpdateStore(data: unknown) {
             store,
         };
     } catch (error) {
-        console.error('Error al crear/actualizar tienda:', error);
+        console.error('Error al guardar tienda:', error);
         return {
             ok: false,
-            message: 'Error al crear/actualizar tienda',
+            message: 'Error en guardar tienda',
         };
     }
 }
