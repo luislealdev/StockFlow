@@ -1,4 +1,4 @@
-import { createUpdateCategory, getPaginatedCategories } from "@/actions/category";
+import { createUpdateCategory, DeleteCategory, getPaginatedCategories } from "@/actions/category";
 import { NextRequest, NextResponse } from "next/server";
 
 async function handler(req: NextRequest) {
@@ -28,25 +28,30 @@ async function handler(req: NextRequest) {
             });
 
         case 'POST':
+        case 'PUT':
             const { ok, message } = await createUpdateCategory(body);
             return NextResponse.json({
                 ok,
                 message
             });
 
-        case 'PUT':
-            const { ok: updateOk, message: updateMessage } = await createUpdateCategory(body);
+        case 'DELETE':
+            const { ok: deleteOk, message: deleteMessage } = await DeleteCategory(body.id);
             return NextResponse.json({
-                ok: updateOk,
-                message: updateMessage
-            });
-
-        default:
-            return NextResponse.json({
-                ok: false,
-                message: `Método ${method} no permitido`
-            }, {
-                status: 405
+                ok: deleteOk,
+                message: deleteMessage
             });
     }
+}
+
+export async function POST(req: NextRequest) {
+    return handler(req);
+}
+
+export async function GET(req: NextRequest) {
+    return handler(req);
+}
+
+export async function PUT(req: NextRequest) {
+    return handler(req);
 }
