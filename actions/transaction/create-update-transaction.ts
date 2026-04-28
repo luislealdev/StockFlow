@@ -86,7 +86,7 @@ export async function createUpdateTransaction(data: unknown) {
             });
 
         revalidatePath('/transacciones');
-        revalidatePath('/productos'); 
+        revalidatePath('/productos');
 
         return {
             ok: true,
