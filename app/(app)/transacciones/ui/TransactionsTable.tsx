@@ -276,6 +276,7 @@ export const TransactionsTable = ({
                     products={products || []}
                     stores={stores || []}
                     onClose={closeModal}
+                    onSaved={() => router.refresh()}
                 />
             )}
         </section>
