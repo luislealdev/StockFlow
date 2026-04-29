@@ -11,9 +11,12 @@ export default function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const expectedAuthorization = `Bearer ${process.env.API_SECRET}`;
+  const expectedAuthorization = `Bearer ${process.env.API_KEY}`;
 
   if (request.headers.get('authorization') !== expectedAuthorization) {
+    console.log(request.headers.get('authorization'));
+    console.log(expectedAuthorization);
+
     return NextResponse.json(
       {
         ok: false,
