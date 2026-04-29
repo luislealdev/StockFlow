@@ -66,7 +66,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
                     // Comparar las contraseñas
                     const isValidPassword = bcryptjs.compareSync(password, user.password);
-                    if (!isValidPassword) {
+                    if (!isValidPassword) {                        
                         return null;
                     }
 

@@ -5,6 +5,7 @@ import { createUpdateStore } from '@/actions/store';
 import { createUpdateProduct } from '@/actions/product';
 import { createUpdateTransaction } from '@/actions/transaction';
 import { NextResponse } from 'next/server';
+import { createUpdateUser } from '@/actions/user';
 
 type SeedResult = {
 	categoriesCreated: number;
@@ -30,6 +31,18 @@ export async function POST() {
 		});
 		const existingProducts = await prisma.product.findMany({
 			select: { id: true, name: true },
+		});
+
+		await prisma.user.deleteMany({
+			where: {
+				email: 'testing@stockflow.com',
+			}
+		});
+
+		const resp = await createUpdateUser({
+			email: 'testing@stockflow.com',
+			name: 'Usuario de Prueba',
+			password: '$password123',
 		});
 
 		const categoryByName = new Map(existingCategories.map((category) => [category.name, category]));
@@ -128,6 +141,7 @@ export async function POST() {
 			message: 'Datos falsos insertados correctamente',
 			data: result,
 		});
+
 	} catch (error) {
 		console.error('Error al insertar datos falsos:', error);
 		return NextResponse.json(
