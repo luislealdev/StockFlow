@@ -1,10 +1,18 @@
+import { auth } from '@/auth.config';
 import { Sidebar } from './ui/Sidebar';
+import { redirect } from 'next/navigation';
 
-export default function AppLayout({
+export default async function AppLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+
+    const session = await auth();
+    if (!session) {
+        redirect('/auth');
+    }
+
     return (
         <div className="min-h-screen bg-slate-50 text-slate-900 lg:flex">
             <Sidebar />
