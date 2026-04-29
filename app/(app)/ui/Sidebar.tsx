@@ -14,6 +14,8 @@ import {
     ShoppingBag,
     Store,
 } from 'lucide-react';
+import { logout } from '@/actions/auth';
+import { toast } from 'sonner';
 
 export const Sidebar = () => {
     const pathname = usePathname();
@@ -26,6 +28,11 @@ export const Sidebar = () => {
         { href: '/tiendas', label: 'Tiendas', description: 'Sucursales y ubicaciones', icon: Store },
         { href: '/transacciones', label: 'Transacciones', description: 'Movimientos y auditoría', icon: ClipboardList },
     ];
+
+    const handleLogOut = async () => {
+        toast.success("Cerrando sesión...");
+        await logout();
+    }
 
     return (
         <>
