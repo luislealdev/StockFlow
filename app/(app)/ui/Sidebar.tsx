@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
     BarChart3,
     Boxes,
@@ -19,6 +19,7 @@ import { toast } from 'sonner';
 
 export const Sidebar = () => {
     const pathname = usePathname();
+    const router = useRouter();
     const [isMobileOpen, setIsMobileOpen] = React.useState(false);
 
     const navigation = [
@@ -29,9 +30,30 @@ export const Sidebar = () => {
         { href: '/transacciones', label: 'Transacciones', description: 'Movimientos y auditoría', icon: ClipboardList },
     ];
 
-    const handleLogOut = async () => {
-        toast.success("Cerrando sesión...");
-        await logout();
+    const handleLogOut = () => {
+        toast('¿Estás seguro de cerrar sesión?', {
+            description: 'Tu sesión actual se cerrará y tendrás que volver a iniciar sesión.',
+            duration: 8000,
+            action: {
+                label: 'Sí, cerrar sesión',
+                onClick: async () => {
+                    const result = await logout();
+
+                    if (!result.ok) {
+                        toast.error(result.message);
+                        return;
+                    }
+
+                    toast.success(result.message);
+                    setIsMobileOpen(false);
+                    router.push('/auth');
+                },
+            },
+            cancel: {
+                label: 'Cancelar',
+                onClick: () => undefined,
+            },
+        });
     }
 
     return (
@@ -127,14 +149,13 @@ export const Sidebar = () => {
                             })}
                         </nav>
 
-                        <div className="rounded-3xl border border-slate-200 bg-slate-950 p-4 text-white shadow-sm shadow-slate-300/30">
-                            <p className="text-xs font-semibold uppercase tracking-[0.25em] text-blue-300">
-                                Estado del sistema
-                            </p>
-                            <p className="mt-2 text-sm leading-6 text-slate-300">
-                                Tu panel está listo para administrar el flujo operativo sin ruido visual.
-                            </p>
-                        </div>
+                        <button
+                            type="button"
+                            onClick={handleLogOut}
+                            className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950"
+                        >
+                            Cerrar sesión
+                        </button>
                     </div>
                 </div>
             </aside>
