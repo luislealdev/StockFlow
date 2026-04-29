@@ -1,4 +1,5 @@
 import { createUpdateCategory, DeleteCategory, getPaginatedCategories } from "@/actions/category";
+import proxy from "@/proxy";
 import { NextRequest, NextResponse } from "next/server";
 
 async function handler(req: NextRequest) {
