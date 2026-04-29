@@ -112,26 +112,28 @@ rs.reconfig(cfg, { force: true })
 
 ```mermaid
 flowchart LR
-  subgraph Client
-    A[Browser (Client components)]
-    A -->|Server Actions / API| B[Next.js App Router]
-  end
 
-  subgraph Server
-    B --> C[Server Actions]
-    B --> D[API Routes (privadas)]
-    C --> E[Prisma Client]
+subgraph Client["Client"]
+    A["Browser - Client Components"]
+    A -->|"Server Actions / API"| B
+end
+
+subgraph Server["Server"]
+    B["Next.js App Router"]
+    B --> C["Server Actions"]
+    B --> D["API Routes Privadas"]
+    C --> E["Prisma Client"]
     D --> E
-    E --> F[MongoDB (Docker ReplicaSet)]
-    B --> G[NextAuth (auth)]
-  end
+    E --> F["MongoDB Docker ReplicaSet"]
+    B --> G["NextAuth Auth"]
+end
 
-  subgraph External
-    H[Proxy / API_KEY consumers]
-  end
+subgraph External["External"]
+    H["Proxy / API_KEY Consumers"]
+end
 
-  G --> E
-  H -->|Bearer / API_KEY| D
+G --> E
+H -->|"Bearer / API_KEY"| D
 ```
 
 ## Decisiones técnicas más importantes (y por qué)
